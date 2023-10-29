@@ -33,13 +33,13 @@ def RePAD(data, api_id, save=True):
 	x_pred = x_pred.reshape(1, 1, 1)
 	y_pred = model.predict(x_pred, verbose=0)
 
-	return y_pred[0][0], model
+	return float(y_pred[0][0]), model
 
 def RePAD_predict(x_pred, api_id):
 	model = tf.keras.models.load_model("./models/{}.keras".format(api_id))
 	x_pred = x_pred.reshape(1, 1, 1)
 	y_pred = model.predict(x_pred, verbose=0)
-	return y_pred[0][0]
+	return float(y_pred[0][0])
 
 def AARE(u, u_hat):
 	if (len(u) != len(u_hat)):
