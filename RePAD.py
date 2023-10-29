@@ -31,24 +31,24 @@ def RePAD(data, api_id, save=True):
 	x_pred = data[len(data)-1]
 	x_pred = np.array([x_pred]).transpose().astype(float)
 	x_pred = x_pred.reshape(1, 1, 1)
-	y_pred = model.predict(x_pred, verbose=0)
+	y_pred = model(x_pred).numpy()
 
 	return float(y_pred[0][0]), model
 
 def RePAD_predict(x_pred, api_id):
 	model = tf.keras.models.load_model("./models/{}.keras".format(api_id))
-	x_pred = x_pred.reshape(1, 1, 1)
-	y_pred = model.predict(x_pred, verbose=0)
+	x_pred = np.array([x_pred]).astype(float).reshape(1, 1, 1)
+	y_pred = model(x_pred).numpy()
 	return float(y_pred[0][0])
 
 def AARE(u, u_hat):
 	if (len(u) != len(u_hat)):
 		return 0	# TODO: change to None
 	
-	return (1 / 3) * sum((abs(u[i] - u_hat[i])) / u[i] for i in range(len(u)))
+	return (1 / 3) * sum(((abs(u[i] - u_hat[i])) / u[i]) for i in range(len(u)))
 
 def RePAD_threshold(db, api_id):
-	responses = db.responses.find({ "_id": ObjectId(api_id) }, { "AARE": 1 }).limit(2880)
+	responses = db.responses.find({ "api": ObjectId(api_id) }, { "AARE": 1 }).sort("createdAt", -1).limit(2880)
 	aares = [res.get("AARE") for res in responses if res.get("AARE") is not None]
 
 	# the following part is derived from RePAD2's implementation

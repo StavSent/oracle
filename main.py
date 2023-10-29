@@ -57,14 +57,14 @@ def func(db, api_ids):
                 u_hat = []
                 u_pred = 0
                 if len(current_predictions) == 0:
-                    u_hat = [future_predictions[future_predictions-b:len(future_predictions)]]
+                    u_hat = future_predictions[len(future_predictions)-b:len(future_predictions)]
                     u_pred = u_hat[-1]
                 elif len(current_predictions) == 1:
                     u_pred = RePAD_predict(x_pred=timings[len(timings)-2], api_id=api_id)
                     u_hat = [future_predictions[-1], current_predictions[0], u_pred]
                 else:
                     u_pred = RePAD_predict(x_pred=timings[len(timings)-2], api_id=api_id)
-                    u_hat = [current_predictions[len(current_predictions)-(b-1):len(current_predictions)]]
+                    u_hat = current_predictions[len(current_predictions)-(b-1):len(current_predictions)]
                     u_hat.append(u_pred)
                 
                 aare = AARE(u=timings[len(timings)-b:len(timings)], u_hat=u_hat)
@@ -96,11 +96,11 @@ def func(db, api_ids):
 
                 u_hat = []
                 if len(current_predictions) == 0:
-                    u_hat = [future_predictions[len(future_predictions)-b:len(future_predictions)]]
+                    u_hat = future_predictions[len(future_predictions)-b:len(future_predictions)]
                 elif len(current_predictions) == 1:
                     u_hat = [future_predictions[-1], current_predictions[0], u_pred]
                 else:
-                    u_hat = [current_predictions[len(current_predictions)-(b-1):len(current_predictions)]]
+                    u_hat = current_predictions[len(current_predictions)-(b-1):len(current_predictions)]
                     u_hat.append(u_pred)
 
                 aare = AARE(u=timings[len(timings)-b:len(timings)], u_hat=u_hat)
