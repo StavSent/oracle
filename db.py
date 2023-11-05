@@ -17,13 +17,29 @@ def getLatestResponses(db, api_id, b = 3):
 	responses = db.responses.aggregate([
 		{ "$match": { "api": ObjectId(api_id), "hasFailed": False, "hasError": False } },
 		{ "$sort": { "createdAt": -1 } },
-		{ "$limit": (2 * b) + 1 },	# b = 3 but we need at least 8 last responses to check on which step is currently the algorithm  
+		{ "$limit": (2 * b) + 2 },	# b = 3 but we need at least 8 last responses to check on which step is currently the algorithm
 		{ "$project": {
 			"timing": "$timings.duration",
 			"futurePrediction": 1,
 			"currentPrediction": 1,
 			"AARE": 1,
 			"thd": 1,
+		} }
+	])
+
+	return list(responses)
+
+def getResposesById(db, ids):
+	responses = db.responses.aggregate([
+		{ "$match": { "_id": { "$in": ids } } },
+		{ "$sort": { "createdAt": -1 } },
+		{ "$project": {
+			"timing": "$timings.duration",
+			"futurePrediction": 1,
+			"currentPrediction": 1,
+			"AARE": 1,
+			"thd": 1,
+			"createdAt": 1,
 		} }
 	])
 
